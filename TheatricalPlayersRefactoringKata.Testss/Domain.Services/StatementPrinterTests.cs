@@ -5,7 +5,7 @@ using TheatricalPlayersRefactoringKata.Domain.Models;
 using TheatricalPlayersRefactoringKata.Domain.Services;
 using TheatricalPlayersRefactoringKata.Domain.Services.Adapters;
 
-namespace TheatricalPlayersRefactoringKata.Tests;
+namespace TheatricalPlayersRefactoringKata.Tests.Domain.Services;
 
 public class StatementPrinterTests
 {

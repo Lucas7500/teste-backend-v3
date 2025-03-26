@@ -1,7 +1,4 @@
 ﻿using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Interfaces;
 using TheatricalPlayersRefactoringKata.Domain.Models;
