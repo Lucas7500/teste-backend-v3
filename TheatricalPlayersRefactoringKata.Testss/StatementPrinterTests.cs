@@ -11,26 +11,26 @@ public class StatementPrinterTests
 {
     [Fact]
     [UseReporter(typeof(DiffReporter))]
-    public void TestTextStatementExample()
+    public async Task TestTextStatementExample()
     {
         var plays = GetPlays();
         var invoice = GetInvoice();
 
         var adapter = new StatementToTextAdapter();
-        var result = new StatementPrinter(adapter).Print(invoice, plays);
+        var result = await new StatementPrinter(adapter).PrintAsync(invoice, plays);
 
         Approvals.Verify(result);
     }
     
     [Fact]
     [UseReporter(typeof(DiffReporter))]
-    public void TestXmlStatementExample()
+    public async Task TestXmlStatementExample()
     {
         var plays = GetPlays();
         var invoice = GetInvoice();
 
         var adapter = new StatementToXmlAdapter();
-        var result = new StatementPrinter(adapter).Print(invoice, plays);
+        var result = await new StatementPrinter(adapter).PrintAsync(invoice, plays);
 
         Approvals.Verify(result);
     }

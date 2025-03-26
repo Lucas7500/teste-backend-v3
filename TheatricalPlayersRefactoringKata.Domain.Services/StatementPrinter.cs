@@ -7,8 +7,8 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services;
 
 public class StatementPrinter(IStatementAdapter statementAdapter)
 {
-    public string Print(Invoice invoice, Dictionary<string, Play> plays)
+    public async Task<string> PrintAsync(Invoice invoice, Dictionary<string, Play> plays)
     {
-        return statementAdapter.Print(invoice, plays, new CultureInfo("en-US"));
+        return await statementAdapter.PrintAsync(invoice, plays, new CultureInfo("en-US"));
     }
 }

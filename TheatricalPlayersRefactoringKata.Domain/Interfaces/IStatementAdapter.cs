@@ -6,6 +6,6 @@ namespace TheatricalPlayersRefactoringKata.Domain.Interfaces
 {
     public interface IStatementAdapter
     {
-        string Print(Invoice invoice, Dictionary<string, Play> plays, CultureInfo cultureInfo);
+        Task<string> PrintAsync(Invoice invoice, Dictionary<string, Play> plays, CultureInfo cultureInfo);
     }
 }

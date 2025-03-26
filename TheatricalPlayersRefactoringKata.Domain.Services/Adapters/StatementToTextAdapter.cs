@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Interfaces;
 using TheatricalPlayersRefactoringKata.Domain.Models;
@@ -9,14 +11,14 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters
 {
     public class StatementToTextAdapter : IStatementAdapter
     {
-        public string Print(Invoice invoice, Dictionary<string, Play> plays, CultureInfo cultureInfo)
+        public async Task<string> PrintAsync(Invoice invoice, Dictionary<string, Play> plays, CultureInfo cultureInfo)
         {
             var totalAmount = decimal.Zero;
             var volumeCredits = 0;
 
-            var statement = new StringBuilder();
+            using var writer = new StringWriter();
 
-            statement.AppendLine(string.Format("Statement for {0}", invoice.Customer));
+            await writer.WriteLineAsync($"Statement for {invoice.Customer}");
 
             foreach (var perf in invoice.Performances)
             {
@@ -29,14 +31,14 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters
                 thisAmount = genre.CalculateAmount();
                 volumeCredits += genre.CalculateCredit();
 
-                statement.AppendLine(string.Format(cultureInfo, "  {0}: {1:C} ({2} seats)", play.Name, thisAmount, perf.Audience));
+                await writer.WriteLineAsync(string.Format(cultureInfo, "  {0}: {1:C} ({2} seats)", play.Name, thisAmount, perf.Audience));
                 totalAmount += thisAmount;
             }
 
-            statement.AppendLine(string.Format(cultureInfo, "Amount owed is {0:C}", totalAmount));
-            statement.AppendLine(string.Format("You earned {0} credits", volumeCredits));
+            await writer.WriteLineAsync(string.Format(cultureInfo, "Amount owed is {0:C}", totalAmount));
+            await writer.WriteLineAsync($"You earned {volumeCredits} credits");
 
-            return statement.ToString();
+            return writer.ToString();
         }
     }
 }

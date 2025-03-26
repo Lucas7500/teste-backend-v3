@@ -45,7 +45,7 @@ namespace TheatricalPlayersRefactoringKata.API.Bus
                     _ => throw new Exception($"Invalid format: {request.Format}")
                 };
 
-                var result = new StatementPrinter(values.Adapter).Print(request.Invoice, request.Plays);
+                var result = await new StatementPrinter(values.Adapter).PrintAsync(request.Invoice, request.Plays);
                 var fileName = string.Format("statement_file.{0}", format);
                 var attachment = new AttachmentFile(fileName, result.ToFile(), values.ContentType);
 

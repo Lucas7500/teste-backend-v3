@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Interfaces;
@@ -9,7 +11,7 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters
 {
     public class StatementToXmlAdapter : IStatementAdapter
     {
-        public string Print(Invoice invoice, Dictionary<string, Play> plays, CultureInfo cultureInfo)
+        public async Task<string> PrintAsync(Invoice invoice, Dictionary<string, Play> plays, CultureInfo cultureInfo)
         {
             var statement = new StatementXml
             {
@@ -46,15 +48,28 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters
             statement.AmountOwed = totalAmount;
             statement.EarnedCredits = totalCredits;
 
-            return SerializeToXml(statement);
+            return await Task.FromResult(SerializeToXmlAsync(statement));
         }
 
-        private static string SerializeToXml(StatementXml statement)
+        private static string SerializeToXmlAsync(StatementXml statement)
         {
             var xmlSerializer = new XmlSerializer(typeof(StatementXml));
-            using var stringWriter = new StringWriter();
-            xmlSerializer.Serialize(stringWriter, statement);
-            return stringWriter.ToString();
+
+            var stringBuilder = new StringBuilder();
+
+            var settings = new XmlWriterSettings
+            {
+                Indent = true,
+                Encoding = Encoding.UTF8,
+                OmitXmlDeclaration = false
+            };
+
+            using (var writer = XmlWriter.Create(stringBuilder, settings))
+            {
+                xmlSerializer.Serialize(writer, statement);
+            }
+
+            return stringBuilder.ToString();
         }
     }
 
@@ -62,7 +77,7 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters
     public class StatementXml
     {
         public string Customer { get; set; }
-        
+
         [XmlArray("Items")]
         [XmlArrayItem("Item")]
         public List<StatementItemXml> Items { get; set; }
