@@ -12,6 +12,7 @@ namespace TheatricalPlayersRefactoringKata.Infrastructure.Repositories
         void Update(string id, TEntity entity);
         void Delete(TEntity entity);
         void Attach(TEntity entity, AttachmentFile file);
+        AttachmentFile? GetAttachmentFor(string documentId);
         void Commit();
     }
 }

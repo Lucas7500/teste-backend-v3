@@ -14,7 +14,18 @@ namespace TheatricalPlayersRefactoringKata.API.Controllers
     {
         public static void AddStatementEndpoints(this WebApplication app)
         {
-            app.MapPost("/api/statement", ([FromBody] StatementRequest request) =>
+            var repository = new Repository<StatementRequest>();
+
+            app.MapGet("/api/statement-request", ([FromQuery] string id) =>
+            {
+                var attachment = repository.GetAttachmentFor(id);
+
+                return attachment == null
+                    ? Results.NotFound("Statement File Was Not Found!")
+                    : Results.File(attachment.Stream, attachment.ContentType);
+            });
+
+            app.MapPost("/api/statement-request", ([FromBody] StatementRequest request) =>
             {
                 (IStatementAdapter Adapter, string ContentType) values = request.Format.ToLower() switch
                 {
@@ -24,19 +35,22 @@ namespace TheatricalPlayersRefactoringKata.API.Controllers
                 };
 
                 var result = new StatementPrinter(values.Adapter).Print(request.Invoice, request.Plays);
-
-                var repository = new Repository<StatementRequest>();
-                var fileName = string.Concat("statement_file.", request.Format.ToLower());
+                var fileName = request.Format.ToStatementFileName();
                 var attachment = new AttachmentFile(fileName, result.ToFile(), values.ContentType);
 
                 repository.Add(request);
                 repository.Attach(request, attachment);
                 repository.Commit();
 
-                return Results.Content(result, attachment.ContentType);
+                return Results.Ok(string.Format("Check for Statement Request with Id: {0}", request.Id));
             })
             .WithOpenApi()
             .Produces<string>(StatusCodes.Status200OK);
+        }
+
+        private static string ToStatementFileName(this string format)
+        {
+            return string.Format("statement_file.{0}", format.ToLower());
         }
     }
 }

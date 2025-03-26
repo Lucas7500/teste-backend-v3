@@ -53,6 +53,21 @@ namespace TheatricalPlayersRefactoringKata.Infrastructure.Repositories
             Session.Advanced.Attachments.Store(entity, file.Name, file.Stream, file.ContentType);
         }
 
+        public AttachmentFile? GetAttachmentFor(string documentId)
+        {
+            var document = Get(documentId);
+            var attachmentName = Session.Advanced.Attachments.GetNames(document).FirstOrDefault();
+
+            if (attachmentName == null)
+            {
+                return null;
+            }
+
+            var attachment = Session.Advanced.Attachments.Get(documentId, attachmentName.Name);
+
+            return new(attachment.Details.Name, attachment.Stream, attachment.Details.ContentType);
+        }
+
         public void Commit()
         {
             Session.SaveChanges();
