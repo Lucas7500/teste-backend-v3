@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
-using TheatricalPlayersRefactoringKata.API.Extensions;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Mvc;
+using TheatricalPlayersRefactoringKata.API.Bus;
+using TheatricalPlayersRefactoringKata.API.Enums;
 using TheatricalPlayersRefactoringKata.API.Requests;
-using TheatricalPlayersRefactoringKata.Domain.Interfaces;
-using TheatricalPlayersRefactoringKata.Domain.Models;
-using TheatricalPlayersRefactoringKata.Domain.Services;
-using TheatricalPlayersRefactoringKata.Domain.Services.Adapters;
 using TheatricalPlayersRefactoringKata.Infrastructure.Repositories;
 
 namespace TheatricalPlayersRefactoringKata.API.Controllers
@@ -14,43 +11,46 @@ namespace TheatricalPlayersRefactoringKata.API.Controllers
     {
         public static void AddStatementEndpoints(this WebApplication app)
         {
-            var repository = new Repository<StatementRequest>();
-
             app.MapGet("/api/statement-request", ([FromQuery] string id) =>
             {
-                var attachment = repository.GetAttachmentFor(id);
+                var repository = new Repository<StatementRequest>();
 
-                return attachment == null
-                    ? Results.NotFound("Statement File Was Not Found!")
-                    : Results.File(attachment.Stream, attachment.ContentType);
+                var statementRequest = repository.Get(id);
+
+                if (statementRequest == null)
+                {
+                    return Results.NotFound(string.Format("Statement Request Was Not Found With Id: {0}!", id));
+                }
+
+                if (statementRequest.Status == RequestStatusEnum.Completed)
+                {
+                    var attachment = repository.GetAttachmentFor(statementRequest);
+
+                    return attachment == null
+                        ? Results.NotFound(string.Format("Statement File Was Not Found for Statement Request With Id: {0}!", id))
+                        : Results.File(attachment.Stream, attachment.ContentType);
+                }
+
+                return statementRequest.Status switch
+                {
+                    RequestStatusEnum.Pending => Results.Ok(string.Format("Statement Request With Id: {0} is Still Pending!", id)),
+                    RequestStatusEnum.Processing => Results.Ok(string.Format("Statement Request With Id: {0} is Being Processed!", id)),
+                    RequestStatusEnum.Failed => Results.Ok(string.Format("Statement Request With Id: {0} Failed with Message: '{1}'", id, statementRequest.ErrorMessage)),
+                    _ => Results.BadRequest(string.Format("Statement Request With Id: {0} is in an Invalid State!", id))
+                };
             });
 
-            app.MapPost("/api/statement-request", ([FromBody] StatementRequest request) =>
+            app.MapPost("/api/statement-request", async ([FromBody] StatementRequest request, [FromServices] IBus bus) =>
             {
-                (IStatementAdapter Adapter, string ContentType) values = request.Format.ToLower() switch
-                {
-                    "txt" => (new StatementToTextAdapter(), MediaTypeNames.Text.Plain),
-                    "xml" => (new StatementToXmlAdapter(), MediaTypeNames.Application.Xml),
-                    _ => throw new Exception($"Invalid format: {request.Format}")
-                };
-
-                var result = new StatementPrinter(values.Adapter).Print(request.Invoice, request.Plays);
-                var fileName = request.Format.ToStatementFileName();
-                var attachment = new AttachmentFile(fileName, result.ToFile(), values.ContentType);
+                var repository = new Repository<StatementRequest>();
 
                 repository.Add(request);
-                repository.Attach(request, attachment);
                 repository.Commit();
 
-                return Results.Ok(string.Format("Check for Statement Request with Id: {0}", request.Id));
-            })
-            .WithOpenApi()
-            .Produces<string>(StatusCodes.Status200OK);
-        }
+                await bus.Publish(new StatementRequestMessage(request.Id));
 
-        private static string ToStatementFileName(this string format)
-        {
-            return string.Format("statement_file.{0}", format.ToLower());
+                return Results.Ok(string.Format("Statement Requested with Success! Check for Id: {0}", request.Id));
+            });
         }
     }
 }

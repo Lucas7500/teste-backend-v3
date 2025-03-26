@@ -1,8 +1,10 @@
 using Microsoft.OpenApi.Models;
 using TheatricalPlayersRefactoringKata.API.Controllers;
+using TheatricalPlayersRefactoringKata.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRabbitMQService();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

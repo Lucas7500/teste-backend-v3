@@ -1,7 +1,16 @@
-﻿using TheatricalPlayersRefactoringKata.Domain.Entities;
+﻿using TheatricalPlayersRefactoringKata.API.Enums;
+using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Models;
 
 namespace TheatricalPlayersRefactoringKata.API.Requests
 {
-    public record StatementRequest(string? Id, Invoice Invoice, Dictionary<string, Play> Plays, string Format);
+    public class StatementRequest
+    {
+        public string? Id { get; set; }
+        public required Invoice Invoice { get; set; }
+        public required Dictionary<string, Play> Plays { get; set; }
+        public required string Format { get; set; }
+        public RequestStatusEnum Status { get; set; } = RequestStatusEnum.Pending;
+        public string? ErrorMessage { get; set; }
+    }
 }

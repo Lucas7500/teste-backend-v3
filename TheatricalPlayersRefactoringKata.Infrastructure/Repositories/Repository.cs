@@ -20,7 +20,7 @@ namespace TheatricalPlayersRefactoringKata.Infrastructure.Repositories
             return query.Customize(x => x.NoTracking()).ToList();
         }
 
-        public TEntity? Get(string id)
+        public TEntity? Get(string? id)
         {
             return Session.Load<TEntity>(id);
         }
@@ -35,7 +35,7 @@ namespace TheatricalPlayersRefactoringKata.Infrastructure.Repositories
             Session.Store(entity);
         }
 
-        public void Update(string id, TEntity entity)
+        public void Update(string? id, TEntity entity)
         {
             _ = Get(id) ?? throw new InvalidOperationException(string.Format("Entity with Id {0} was not found!", id));
             
@@ -53,9 +53,8 @@ namespace TheatricalPlayersRefactoringKata.Infrastructure.Repositories
             Session.Advanced.Attachments.Store(entity, file.Name, file.Stream, file.ContentType);
         }
 
-        public AttachmentFile? GetAttachmentFor(string documentId)
+        public AttachmentFile? GetAttachmentFor(TEntity document)
         {
-            var document = Get(documentId);
             var attachmentName = Session.Advanced.Attachments.GetNames(document).FirstOrDefault();
 
             if (attachmentName == null)
@@ -63,7 +62,7 @@ namespace TheatricalPlayersRefactoringKata.Infrastructure.Repositories
                 return null;
             }
 
-            var attachment = Session.Advanced.Attachments.Get(documentId, attachmentName.Name);
+            var attachment = Session.Advanced.Attachments.Get(document, attachmentName.Name);
 
             return new(attachment.Details.Name, attachment.Stream, attachment.Details.ContentType);
         }
