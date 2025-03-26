@@ -1,5 +1,4 @@
 ﻿using TheatricalPlayersRefactoringKata.API.Enums;
-using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Models;
 
 namespace TheatricalPlayersRefactoringKata.API.Requests

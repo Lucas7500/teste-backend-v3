@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Interfaces;
 using TheatricalPlayersRefactoringKata.Domain.Models;
 using TheatricalPlayersRefactoringKata.Domain.Services.Factories;

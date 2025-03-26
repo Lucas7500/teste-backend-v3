@@ -1,6 +1,5 @@
 using ApprovalTests;
 using ApprovalTests.Reporters;
-using TheatricalPlayersRefactoringKata.Domain.Entities;
 using TheatricalPlayersRefactoringKata.Domain.Models;
 using TheatricalPlayersRefactoringKata.Domain.Services;
 using TheatricalPlayersRefactoringKata.Domain.Services.Adapters;
