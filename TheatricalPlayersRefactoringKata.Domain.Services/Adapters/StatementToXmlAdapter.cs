@@ -48,10 +48,10 @@ namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters
             statement.AmountOwed = totalAmount;
             statement.EarnedCredits = totalCredits;
 
-            return await Task.FromResult(SerializeToXmlAsync(statement));
+            return await Task.FromResult(SerializeToXml(statement));
         }
 
-        private static string SerializeToXmlAsync(StatementXml statement)
+        private static string SerializeToXml(StatementXml statement)
         {
             var xmlSerializer = new XmlSerializer(typeof(StatementXml));
 
