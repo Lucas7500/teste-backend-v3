@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace TheatricalPlayersRefactoringKata;
+namespace TheatricalPlayersRefactoringKata.Domain.Models;
 
 public class Invoice
 {
@@ -10,10 +8,11 @@ public class Invoice
     public string Customer { get => _customer; set => _customer = value; }
     public List<Performance> Performances { get => _performances; set => _performances = value; }
 
+    public Invoice() { }
+
     public Invoice(string customer, List<Performance> performance)
     {
-        this._customer = customer;
-        this._performances = performance;
+        _customer = customer;
+        _performances = performance;
     }
-
 }
