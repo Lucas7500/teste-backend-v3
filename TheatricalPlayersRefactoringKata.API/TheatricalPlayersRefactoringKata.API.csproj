@@ -15,7 +15,6 @@
     <ProjectReference Include="..\TheatricalPlayersRefactoringKata.Domain.Services\TheatricalPlayersRefactoringKata.Domain.Services.csproj" />
     <ProjectReference Include="..\TheatricalPlayersRefactoringKata.Domain\TheatricalPlayersRefactoringKata.Domain.csproj" />
     <ProjectReference Include="..\TheatricalPlayersRefactoringKata.Infrastructure\TheatricalPlayersRefactoringKata.Infrastructure.csproj" />
-    <ProjectReference Include="..\TheatricalPlayersRefactoringKata.Worker\TheatricalPlayersRefactoringKata.Worker.csproj" />
   </ItemGroup>
 
 </Project>

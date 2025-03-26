@@ -1,10 +1,8 @@
 ﻿using System.Globalization;
 using System.Text;
 using TheatricalPlayersRefactoringKata.Domain.Entities;
-using TheatricalPlayersRefactoringKata.Domain.Enums;
 using TheatricalPlayersRefactoringKata.Domain.Interfaces;
 using TheatricalPlayersRefactoringKata.Domain.Models;
-using TheatricalPlayersRefactoringKata.Domain.Models.Genres;
 using TheatricalPlayersRefactoringKata.Domain.Services.Factories;
 
 namespace TheatricalPlayersRefactoringKata.Domain.Services.Adapters

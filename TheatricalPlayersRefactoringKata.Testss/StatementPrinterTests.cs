@@ -1,7 +1,6 @@
 using ApprovalTests;
 using ApprovalTests.Reporters;
 using TheatricalPlayersRefactoringKata.Domain.Entities;
-using TheatricalPlayersRefactoringKata.Domain.Enums;
 using TheatricalPlayersRefactoringKata.Domain.Models;
 using TheatricalPlayersRefactoringKata.Domain.Services;
 using TheatricalPlayersRefactoringKata.Domain.Services.Adapters;
@@ -55,12 +54,12 @@ public class StatementPrinterTests
     {
         return new Dictionary<string, Play>
         {
-            { "hamlet", new Play("Hamlet", 4024, GenreEnum.Tragedy) },
-            { "as-like", new Play("As You Like It", 2670, GenreEnum.Comedy) },
-            { "othello", new Play("Othello", 3560, GenreEnum.Tragedy) },
-            { "henry-v", new Play("Henry V", 3227, GenreEnum.History) },
-            { "john", new Play("King John", 2648, GenreEnum.History) },
-            { "richard-iii", new Play("Richard III", 3718, GenreEnum.History) }
+            { "hamlet", new Play("Hamlet", 4024, "tragedy") },
+            { "as-like", new Play("As You Like It", 2670, "comedy") },
+            { "othello", new Play("Othello", 3560, "tragedy") },
+            { "henry-v", new Play("Henry V", 3227, "history") },
+            { "john", new Play("King John", 2648, "history") },
+            { "richard-iii", new Play("Richard III", 3718, "history") }
         };
     }
 }
